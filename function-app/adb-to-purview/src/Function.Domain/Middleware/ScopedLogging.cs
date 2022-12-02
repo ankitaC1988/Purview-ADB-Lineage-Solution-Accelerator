@@ -35,8 +35,15 @@ namespace Function.Domain.Middleware
                 throw new ArgumentNullException(nameof(context));
             }
 
-            object runobj = context?.BindingContext?.BindingData["run"] ?? new Object();
-            string runjson = runobj.ToString() ?? "";
+            string runjson;
+            if (context?.BindingContext?.BindingData.ContainsKey("run") ?? false){
+                object runobj = context?.BindingContext?.BindingData["run"] ?? new Object();
+                runjson = runobj.ToString() ?? "";
+            }
+            else{
+                runjson = "";
+            }
+            
             var runFacet = JsonConvert.DeserializeObject<Run>(runjson) ?? new Run();
 
             CorrelationId = runFacet.RunId;
